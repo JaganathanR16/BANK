@@ -1,3 +1,4 @@
+
 # app.py
 
 from flask import Flask, render_template, request, send_file
@@ -5,7 +6,7 @@ from datetime import datetime
 import calendar
 from io import BytesIO
 
-# PDF 22222
+# PDF
 from reportlab.pdfgen.canvas import Canvas
 from reportlab.lib.pagesizes import A4
 
@@ -78,9 +79,7 @@ def index():
             )
 
             # CONVERT VALUES
-            principal_value = float(
-                principal
-            )
+            principal_value = float(principal)
 
             loan_from_date = datetime.strptime(
                 loan_from,
@@ -133,9 +132,7 @@ def index():
                         "%Y-%m-%d"
                     )
 
-                    rate = float(
-                        rates[i]
-                    )
+                    rate = float(rates[i])
 
                     # VALIDATE SET DATES
                     if set_from > set_to:
@@ -312,77 +309,85 @@ def download_pdf():
 
     global latest_result
 
-    if latest_result.strip() == "":
+    if not latest_result.strip():
 
         return "No result available."
 
-    # MEMORY BUFFER
-    buffer = BytesIO()
+    try:
 
-    # CREATE PDF
-    pdf = Canvas(
-        buffer,
-        pagesize=A4
-    )
+        # MEMORY BUFFER
+        buffer = BytesIO()
 
-    width, height = A4
-
-    y = height - 50
-
-    # TITLE
-    pdf.setFont(
-        "Helvetica-Bold",
-        16
-    )
-
-    pdf.drawString(
-        50,
-        y,
-        "Interest Calculation Result"
-    )
-
-    y -= 30
-
-    # FONT
-    pdf.setFont(
-        "Courier",
-        10
-    )
-
-    lines = latest_result.split("\n")
-
-    for line in lines:
-
-        if y <= 40:
-
-            pdf.showPage()
-
-            pdf.setFont(
-                "Courier",
-                10
-            )
-
-            y = height - 50
-
-        pdf.drawString(
-            40,
-            y,
-            line[:140]
+        # CREATE PDF
+        pdf = Canvas(
+            buffer,
+            pagesize=A4
         )
 
-        y -= 15
+        width, height = A4
 
-    # SAVE PDF
-    pdf.save()
+        y = height - 50
 
-    buffer.seek(0)
+        # TITLE
+        pdf.setFont(
+            "Helvetica-Bold",
+            16
+        )
 
-    return send_file(
-        buffer,
-        as_attachment=True,
-        download_name="Interest_Result.pdf",
-        mimetype="application/pdf"
-    )
+        pdf.drawString(
+            50,
+            y,
+            "Interest Calculation Result"
+        )
+
+        y -= 30
+
+        # CONTENT FONT
+        pdf.setFont(
+            "Courier",
+            10
+        )
+
+        # SPLIT LINES
+        lines = latest_result.split("\n")
+
+        for line in lines:
+
+            if y <= 40:
+
+                pdf.showPage()
+
+                pdf.setFont(
+                    "Courier",
+                    10
+                )
+
+                y = height - 50
+
+            pdf.drawString(
+                40,
+                y,
+                str(line)[:140]
+            )
+
+            y -= 15
+
+        # SAVE PDF
+        pdf.save()
+
+        # IMPORTANT
+        buffer.seek(0)
+
+        return send_file(
+            buffer,
+            as_attachment=True,
+            download_name="Interest_Result.pdf",
+            mimetype="application/pdf"
+        )
+
+    except Exception as e:
+
+        return f"PDF Error : {str(e)}"
 
 
 # -----------------------------------
@@ -391,5 +396,5 @@ def download_pdf():
 if __name__ == "__main__":
 
     app.run(
-        debug=True
+        debug=False
     )

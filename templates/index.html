@@ -1,3 +1,4 @@
+```html
 <!-- templates/index.html -->
 
 <!DOCTYPE html>
@@ -108,7 +109,6 @@
 
                 <div class="row mb-3 align-items-center interest-row">
 
-                    <!-- FROM DATE -->
                     <div class="col-md-3">
 
                         <input
@@ -120,7 +120,6 @@
 
                     </div>
 
-                    <!-- TO DATE -->
                     <div class="col-md-3">
 
                         <input
@@ -132,7 +131,6 @@
 
                     </div>
 
-                    <!-- RATE -->
                     <div class="col-md-3">
 
                         <input
@@ -145,7 +143,6 @@
 
                     </div>
 
-                    <!-- DELETE -->
                     <div class="col-md-2">
 
                         <button
@@ -246,12 +243,16 @@
                 </button>
 
                 <!-- DOWNLOAD PDF -->
+                {% if result %}
+
                 <a
                     href="/download_pdf"
                     class="btn btn-warning"
                 >
                     Download PDF
                 </a>
+
+                {% endif %}
 
             </div>
 
@@ -370,3 +371,4 @@ function cancelApplication() {
 
 </body>
 </html>
+
